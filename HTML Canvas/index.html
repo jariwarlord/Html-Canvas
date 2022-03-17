@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 Canvas</title>
+</head>
+<body>
+<canvas id="draw" width="800" height="800"></canvas>
+<script>
+    //Canvas 
+const canvas = document.querySelector("#draw");
+const ctx = canvas.getContext("2d");
+//Canvas shape
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+//Ctx styles
+ctx.strokeStyle = "blue";
+ctx.lineJoin = "miter";
+ctx.lineCap = "miter";
+ctx.lineWidth = 100;
+
+//Drawing and X-Y coordinats.
+let isDrawing = false;
+let lastX = 0;
+let lastY = 0;
+
+//Canvas Hue
+
+let hue = 0; // bu fonkiyona çalış
+
+//Yön ve kalınlık
+
+let direction = true;
+
+//
+ctx.globalCompositeOperation = "difference"; // bu fonksiyona çalış
+
+function draw(e){
+    if(!isDrawing) return;
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+    ctx.moveTo(lastX, lastY);
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+    // bu halde fonksiyon sadece 0dan çıkıp mouseun olduğu yere gidiyor.
+    lastX = e.offsetX;
+    lastY = e.offsetY;
+    hue++;
+    if(hue >= 360){
+        hue = 0;
+    }
+    if(ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+        direction = !direction;
+    }
+    if(direction){
+        ctx.lineWidth++;
+    }else {
+        ctx.lineWidth--;
+    }
+    
+    //Bu yazdığımız iki satır sayeside mouseun başladığı yerden bıraktığı yere gidecek.
+    //[lastX, lastY] = [e.offsetX, e.offsetY] şeklinde yazabiliriz.
+    
+}
+
+canvas.addEventListener("mousedown", (e) => {
+    isDrawing = true;
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+});
+canvas.addEventListener("mousemove",draw);
+canvas.addEventListener("mouseup",() => isDrawing = false);
+canvas.addEventListener("mouseout",() => isDrawing = false);
+
+
+</script>
+
+
+<style>
+  html, body {
+    margin: 0;
+  }
+</style>
+
+</body>
+</html>
